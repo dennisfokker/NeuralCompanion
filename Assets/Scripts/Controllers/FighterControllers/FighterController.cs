@@ -11,15 +11,17 @@ public abstract class FighterController : MonoBehaviour
     
     public SpriteRenderer BackgroundRenderer { get; internal set; }
     public SpriteRenderer ActionRenderer { get; internal set; }
-    public Text HealthText { get; internal set; }
 
+    public List<BattleAction> PreviousOpponentsAction { get; set; }
+
+    internal Action<string> healthChangeAction;
 
     public float Health {
         get {
             return health;
         }
         set {
-            animateHealthChange(value - health, () => HealthText.text = value.ToString());
+            animateHealthChange(value - health, () => healthChangeAction(value.ToString()));
 
             health = value;
         }
@@ -35,6 +37,14 @@ public abstract class FighterController : MonoBehaviour
         if (FlipRenderer)
             transform.localScale = Vector3.Scale(transform.localScale, new Vector3(-1, 1, 1));
         BackgroundRenderer.color = FighterColor;
+
+        PreviousOpponentsAction = new List<BattleAction>();
+    }
+
+    public void Start()
+    {
+        health = GameManager.Instance.MaxHealth;
+        healthChangeAction(health.ToString());
     }
 
     public void ClearActionIcon()
@@ -46,6 +56,16 @@ public abstract class FighterController : MonoBehaviour
 
     private void animateHealthChange(float difference, Action callback)
     {
-        callback();
+        if (difference < 0)
+        {
+            FighterAnimator.ReceiveDamage(gameObject, callback);
+            return;
+        }
+        if (difference > 0)
+        {
+            FighterAnimator.ReceiveHealth(BackgroundRenderer.gameObject, BackgroundRenderer.color, callback);
+            return;
+        }
+        FighterAnimator.NoDamage(gameObject, callback);
     }
 }

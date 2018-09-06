@@ -10,7 +10,7 @@ public class PlayerFighterController : FighterController
     {
         base.Awake();
 
-        HealthText = GameObject.FindGameObjectWithTag("PlayerHealthText").GetComponent<Text>();
+        healthChangeAction = UIController.Instance.UpdatePlayerHealth;
     }
 
     public override IEnumerator PerformTurn(Action<BattleAction> callback)

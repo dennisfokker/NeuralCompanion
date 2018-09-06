@@ -60,10 +60,13 @@ public class GameManager : MonoBehaviour
 
     public void InitializeFighters()
     {
+        if (PlayerFighterController != null)
+            Destroy(PlayerFighterController.gameObject);
+        if (OpponentFighterController != null)
+            Destroy(OpponentFighterController.gameObject);
+
         PlayerFighterController = Instantiate(PlayerFighterPrefab, new Vector3(PlayerStartPosition.X + Offset, PlayerStartPosition.Y), Quaternion.identity).GetComponent<FighterController>();
-        PlayerFighterController.Health = MaxHealth;
         OpponentFighterController = Instantiate(OpponentFighterPrefab, new Vector3(OpponentStartPosition.X + Offset, OpponentStartPosition.Y), Quaternion.identity).GetComponent<FighterController>();
-        OpponentFighterController.Health = MaxHealth;
 
         GameController.FighterControllers = new List<FighterController> { PlayerFighterController, OpponentFighterController };
     }

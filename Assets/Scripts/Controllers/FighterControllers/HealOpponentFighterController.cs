@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class OpponentFighterController : FighterController
+public class HealOpponentFighterController : FighterController
 {
     new public void Awake()
     {
         base.Awake();
 
-        HealthText = GameObject.FindGameObjectWithTag("OpponentHealthText").GetComponent<Text>();
+        healthChangeAction = UIController.Instance.UpdateOpponentHealth;
     }
 
     public override IEnumerator PerformTurn(Action<BattleAction> callback)
