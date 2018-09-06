@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: b128346d8ef878d4bbb85d6e776554ae
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - BattleActionResultsList: {fileID: 11400000, guid: 74af70575d989544aba9b3ccbe7593db,
+      type: 2}
+  - BattleActionIconList: {fileID: 11400000, guid: 6f6fcd3147bbf824294ec6223b50763b,
+      type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

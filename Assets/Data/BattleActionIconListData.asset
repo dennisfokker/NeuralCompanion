@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 279b0b266b866234d9c1698b98e798b5, type: 3}
+  m_Name: BattleActionIconListData
+  m_EditorClassIdentifier: 
+  BattleActionIcons:
+  - BattleAction: 0
+    Icon: {fileID: 21300000, guid: 1d147e2af4709334d9dee13994e3847d, type: 3}
+  - BattleAction: 1
+    Icon: {fileID: 21300000, guid: 47ab05167003cb14884c0ac6368e1f9f, type: 3}
+  - BattleAction: 2
+    Icon: {fileID: 21300000, guid: ca80e2e53d0f4e64983a4b6d7ae6ac83, type: 3}
+  - BattleAction: 3
+    Icon: {fileID: 21300000, guid: 71c2c840167e0064ab3ca36f2fefca0c, type: 3}
+  - BattleAction: 4
+    Icon: {fileID: 21300000, guid: 95c4fa73058fd9d4cb9c1a092dd3c3cb, type: 3}

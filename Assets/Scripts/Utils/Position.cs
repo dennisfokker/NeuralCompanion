@@ -2,7 +2,7 @@
 using UnityEngine;
 
 [Serializable]
-public class Position
+public struct Position
 {
     public int X;
     public int Y;
@@ -30,11 +30,12 @@ public class Position
 
     public static bool operator !=(Position x, Position y)
     {
-        if (object.ReferenceEquals(x, null) && object.ReferenceEquals(y, null)) return false;
+        return !(x == y);
+    }
 
-        if (object.ReferenceEquals(x, null) || object.ReferenceEquals(y, null)) return true;
-
-        return x.X.CompareTo(y.X) != 0 || x.Y.CompareTo(y.Y) != 0;
+    public static Position operator +(Position x, Position y)
+    {
+        return new Position(x.X + y.X, x.Y + y.Y);
     }
 
     public static implicit operator Vector3(Position pos)

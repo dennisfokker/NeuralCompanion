@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f814cd27f7831c34bb7f18052996b1b8, type: 3}
+  m_Name: BattleActionResultsListData
+  m_EditorClassIdentifier: 
+  BattleActionResults:
+  - BattleAction: 0
+    BattleActionResultList:
+    - BattleAction: 0
+      ReceivingDamage: 0
+    - BattleAction: 1
+      ReceivingDamage: 3
+    - BattleAction: 2
+      ReceivingDamage: 0
+    - BattleAction: 3
+      ReceivingDamage: 3
+    - BattleAction: 4
+      ReceivingDamage: 0
+  - BattleAction: 1
+    BattleActionResultList:
+    - BattleAction: 0
+      ReceivingDamage: 0
+    - BattleAction: 1
+      ReceivingDamage: 2
+    - BattleAction: 2
+      ReceivingDamage: 0
+    - BattleAction: 3
+      ReceivingDamage: 2
+    - BattleAction: 4
+      ReceivingDamage: 0
+  - BattleAction: 2
+    BattleActionResultList:
+    - BattleAction: 0
+      ReceivingDamage: 0
+    - BattleAction: 1
+      ReceivingDamage: 0
+    - BattleAction: 2
+      ReceivingDamage: 0
+    - BattleAction: 3
+      ReceivingDamage: 0
+    - BattleAction: 4
+      ReceivingDamage: 0
+  - BattleAction: 3
+    BattleActionResultList:
+    - BattleAction: 0
+      ReceivingDamage: 0
+    - BattleAction: 1
+      ReceivingDamage: 0
+    - BattleAction: 2
+      ReceivingDamage: 1
+    - BattleAction: 3
+      ReceivingDamage: 2
+    - BattleAction: 4
+      ReceivingDamage: 0
+  - BattleAction: 4
+    BattleActionResultList:
+    - BattleAction: 0
+      ReceivingDamage: -3
+    - BattleAction: 1
+      ReceivingDamage: 3
+    - BattleAction: 2
+      ReceivingDamage: -3
+    - BattleAction: 3
+      ReceivingDamage: 1
+    - BattleAction: 4
+      ReceivingDamage: -3

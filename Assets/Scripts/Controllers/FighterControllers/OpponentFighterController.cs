@@ -2,12 +2,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class OpponentFighterController : FighterController
 {
-    public override IEnumerator PerformTurn(Action callback)
+    new public void Awake()
     {
-        callback();
+        base.Awake();
+
+        HealthText = GameObject.FindGameObjectWithTag("OpponentHealthText").GetComponent<Text>();
+    }
+
+    public override IEnumerator PerformTurn(Action<BattleAction> callback)
+    {
+        BattleAction action = BattleAction.HEAL;
+
+        callback(action);
         yield break;
     }
 }
