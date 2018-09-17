@@ -1,4 +1,4 @@
-﻿public enum BattleAction
+﻿public enum ActionType
 {
 	NOTHING,    // Nothing
     ATTACK,     // 0 vs defend     = -1 vs magic         = +3 vs attack

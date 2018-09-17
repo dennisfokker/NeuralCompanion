@@ -6,18 +6,33 @@ using UnityEngine.UI;
 
 public class HealOpponentFighterController : FighterController
 {
-    new public void Awake()
+    public override void Awake()
     {
         base.Awake();
-
+        
         healthChangeAction = UIController.Instance.UpdateOpponentHealth;
     }
 
-    public override IEnumerator PerformTurn(Action<BattleAction> callback)
+    public override BattleAction GetAction(Dictionary<int, FighterController> fighters, Dictionary<int, BattleAction> previousFigherActions)
     {
-        BattleAction action = BattleAction.HEAL;
+        if (Target < 0)
+            Target = getTarget(fighters);
 
-        callback(action);
-        yield break;
+        ActionType action = ActionType.HEAL;
+
+        return new BattleAction(action, Target);
+    }
+
+    private int getTarget(Dictionary<int, FighterController> fighters)
+    {
+        foreach (KeyValuePair<int, FighterController> entry in fighters)
+        {
+            if (entry.Value == this)
+                continue;
+
+            return entry.Key;
+        }
+
+        return 0;
     }
 }

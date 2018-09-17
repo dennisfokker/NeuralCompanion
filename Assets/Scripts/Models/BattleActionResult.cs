@@ -3,6 +3,6 @@
 [Serializable]
 public struct BattleActionResult
 {
-    public BattleAction BattleAction;
+    public ActionType ActionType;
     public float ReceivingDamage;
 }

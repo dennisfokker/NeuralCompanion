@@ -820,6 +820,8 @@ GameObject:
   - component: {fileID: 1363943767}
   - component: {fileID: 1363943766}
   - component: {fileID: 1363943768}
+  - component: {fileID: 1363943769}
+  - component: {fileID: 1363943770}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: GameManager
@@ -842,9 +844,9 @@ MonoBehaviour:
     type: 2}
   LevelBarrierPrefab: {fileID: 1248315863183482, guid: e0b35f6fee7bc964986320ba0251592c,
     type: 2}
-  PlayerFighterPrefab: {fileID: 1389546830314132, guid: 7c7adc89175fe1747bd17c150e674c26,
+  PlayerFighterPrefab: {fileID: 1719153591199802, guid: 7c98cc5e5be04ca45b5d1641529859f7,
     type: 2}
-  OpponentFighterPrefab: {fileID: 1170441349205976, guid: 259e31c78fb92f74a95e3d443b75c8f0,
+  OpponentFighterPrefab: {fileID: 1444118198524838, guid: 5fc16f820aa6925479094aba9759f9fa,
     type: 2}
   GroundHeight: 0
   LevelWidth: 10
@@ -909,6 +911,41 @@ MonoBehaviour:
   PlayerHealthText: {fileID: 971209293}
   OpponentHealthText: {fileID: 192420165}
   WinLossText: {fileID: 29732203}
+--- !u!114 &1363943769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1363943763}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 356a4cf556ffb5b468e1da2897179333, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  NumInputs: 7
+  NumHiddenLayers: 2
+  NeuronsPerHiddenLayer: 6
+  NumOutputs: 4
+  ActivationResponse: 1
+  Bias: -1
+  CrossoverRate: 0.7
+  MutationRate: 0.1
+  MaxPerturbation: 0.3
+  NumEntities: 100
+  NumElite: 4
+  NumCopiesElite: 2
+  MaxTurns: 30
+--- !u!114 &1363943770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1363943763}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bbb7b67e285aa140b9a68ac28237eea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1481479252
 GameObject:
   m_ObjectHideFlags: 0

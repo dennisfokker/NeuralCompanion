@@ -4,6 +4,6 @@ using System.Collections.Generic;
 [Serializable]
 public struct BattleActionResults
 {
-    public BattleAction BattleAction;
+    public ActionType ActionType;
     public List<BattleActionResult> BattleActionResultList;
 }

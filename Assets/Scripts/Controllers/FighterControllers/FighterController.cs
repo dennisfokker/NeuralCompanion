@@ -6,17 +6,18 @@ using UnityEngine.UI;
 
 public abstract class FighterController : MonoBehaviour
 {
+    public int Target { get; internal set; }
+
     public bool FlipRenderer = false;
     public Color FighterColor = Color.white;
     
-    public SpriteRenderer BackgroundRenderer { get; internal set; }
-    public SpriteRenderer ActionRenderer { get; internal set; }
+    public virtual SpriteRenderer BackgroundRenderer { get; internal set; }
+    public virtual SpriteRenderer ActionRenderer { get; internal set; }
 
-    public List<BattleAction> PreviousOpponentsAction { get; set; }
+    internal Action<string> healthChangeAction = new Action<string>((s) => { /* nothing */ });
+    internal GameController GameController;
 
-    internal Action<string> healthChangeAction;
-
-    public float Health {
+    public virtual float Health {
         get {
             return health;
         }
@@ -29,32 +30,41 @@ public abstract class FighterController : MonoBehaviour
 
     private float health;
 
-    public void Awake()
+    public virtual void Awake()
     {
-        ActionRenderer = transform.Find("ActionRenderer").GetComponent<SpriteRenderer>();
-        BackgroundRenderer = transform.Find("BackgroundRenderer").GetComponent<SpriteRenderer>();
+        ActionRenderer = transform.Find("ActionRenderer")?.GetComponent<SpriteRenderer>();
+        BackgroundRenderer = transform.Find("BackgroundRenderer")?.GetComponent<SpriteRenderer>();
 
         if (FlipRenderer)
             transform.localScale = Vector3.Scale(transform.localScale, new Vector3(-1, 1, 1));
-        BackgroundRenderer.color = FighterColor;
+        if (BackgroundRenderer != null)
+            BackgroundRenderer.color = FighterColor;
 
-        PreviousOpponentsAction = new List<BattleAction>();
+        Target = -1;
+
+        GameController = GameManager.Instance.GameController;
     }
 
-    public void Start()
+    public virtual void Start()
     {
         health = GameManager.Instance.MaxHealth;
         healthChangeAction(health.ToString());
     }
 
-    public void ClearActionIcon()
+    public virtual void ClearActionIcon()
     {
         ActionRenderer.sprite = null;
     }
+    
+    public virtual IEnumerator PerformTurn(Dictionary<int, FighterController> fighters, Dictionary<int, BattleAction> previousActions, Action<BattleAction> callback)
+    {
+        callback(GetAction(fighters, previousActions));
+        yield break;
+    }
 
-    public abstract IEnumerator PerformTurn(Action<BattleAction> callback);
+    public abstract BattleAction GetAction(Dictionary<int, FighterController> fighters, Dictionary<int, BattleAction> previousActions);
 
-    private void animateHealthChange(float difference, Action callback)
+    internal virtual void animateHealthChange(float difference, Action callback)
     {
         if (difference < 0)
         {

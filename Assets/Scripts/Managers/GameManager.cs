@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
 
     public float Offset { get; private set; }
     public GameController GameController { get; private set; }
+    public NeuralNetworkManager NeuralNetworkManager { get; private set; }
 
     private FighterController PlayerFighterController;
     private FighterController OpponentFighterController;
@@ -38,6 +39,7 @@ public class GameManager : MonoBehaviour
         }
 
         GameController = GetComponent<GameController>();
+        NeuralNetworkManager = GetComponent<NeuralNetworkManager>();
     }
 
     void Start ()
@@ -68,6 +70,10 @@ public class GameManager : MonoBehaviour
         PlayerFighterController = Instantiate(PlayerFighterPrefab, new Vector3(PlayerStartPosition.X + Offset, PlayerStartPosition.Y), Quaternion.identity).GetComponent<FighterController>();
         OpponentFighterController = Instantiate(OpponentFighterPrefab, new Vector3(OpponentStartPosition.X + Offset, OpponentStartPosition.Y), Quaternion.identity).GetComponent<FighterController>();
 
-        GameController.FighterControllers = new List<FighterController> { PlayerFighterController, OpponentFighterController };
+        GameController.FighterControllers = new Dictionary<int, FighterController>
+        {
+            { 0, PlayerFighterController },
+            { 1, OpponentFighterController }
+        };
     }
 }

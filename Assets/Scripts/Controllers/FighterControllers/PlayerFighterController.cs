@@ -6,36 +6,59 @@ using UnityEngine.UI;
 
 public class PlayerFighterController : FighterController
 {
-    new public void Awake()
+    private int target = -1;
+
+    public override void Awake()
     {
         base.Awake();
 
         healthChangeAction = UIController.Instance.UpdatePlayerHealth;
     }
 
-    public override IEnumerator PerformTurn(Action<BattleAction> callback)
+    public override IEnumerator PerformTurn(Dictionary<int, FighterController> fighters, Dictionary<int, BattleAction> previousFigherActions, Action<BattleAction> callback)
     {
-        BattleAction? action = GetPlayerInput();
+        if (target < 0)
+            target = getTarget(fighters);
+
+        ActionType? action = GetPlayerInput();
         while (action == null)
         {
             action = GetPlayerInput();
             yield return null;
         }
 
-        callback((BattleAction) action);
+        callback(new BattleAction(action ?? ActionType.NOTHING, target));
         yield break;
     }
 
-    private BattleAction? GetPlayerInput()
+    public override BattleAction GetAction(Dictionary<int, FighterController> fighters, Dictionary<int, BattleAction> previousActions)
+    {
+        throw new NotImplementedException();
+    }
+
+    private ActionType? GetPlayerInput()
     {
         if (Input.GetKeyUp(KeyCode.Q))
-            return BattleAction.MAGIC;
+            return ActionType.MAGIC;
         if (Input.GetKeyUp(KeyCode.W))
-            return BattleAction.ATTACK;
+            return ActionType.ATTACK;
         if (Input.GetKeyUp(KeyCode.A))
-            return BattleAction.HEAL;
+            return ActionType.HEAL;
         if (Input.GetKeyUp(KeyCode.S))
-            return BattleAction.DEFEND;
+            return ActionType.DEFEND;
         return null;
+    }
+
+    private int getTarget(Dictionary<int, FighterController> fighters)
+    {
+        foreach (KeyValuePair<int, FighterController> entry in fighters)
+        {
+            if (entry.Value == this)
+                continue;
+
+            return entry.Key;
+        }
+
+        return 0;
     }
 }

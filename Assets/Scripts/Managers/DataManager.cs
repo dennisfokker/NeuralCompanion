@@ -6,8 +6,8 @@ public class DataManager : MonoBehaviour
 {
     public static DataManager Instance { get; private set; }
 
-    public Dictionary<BattleAction, BattleActionResults> BattleActionResults = new Dictionary<BattleAction, BattleActionResults>();
-    public Dictionary<BattleAction, Sprite> BattleActionIcons = new Dictionary<BattleAction, Sprite>();
+    public Dictionary<ActionType, BattleActionResults> BattleActionResults = new Dictionary<ActionType, BattleActionResults>();
+    public Dictionary<ActionType, Sprite> BattleActionIcons = new Dictionary<ActionType, Sprite>();
 
     [SerializeField]
     private BattleActionResultsList BattleActionResultsList;
@@ -27,9 +27,9 @@ public class DataManager : MonoBehaviour
         }
 
         foreach (BattleActionResults bars in BattleActionResultsList.BattleActionResults)
-            BattleActionResults.Add(bars.BattleAction, bars);
+            BattleActionResults.Add(bars.ActionType, bars);
 
         foreach (BattleActionIcon bai in BattleActionIconList.BattleActionIcons)
-            BattleActionIcons.Add(bai.BattleAction, bai.Icon);
+            BattleActionIcons.Add(bai.ActionType, bai.Icon);
     }
 }
