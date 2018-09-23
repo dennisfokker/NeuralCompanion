@@ -14,7 +14,6 @@ public class GeneticAlgorithm
     public float TotalFitness { get; private set; }
     public float BestFitness { get; private set; }
     public float WorstFitness { get; private set; }
-    public int FittestGenomeIndex { get; private set; }
     public int Generation { get; private set; }
 
     private List<Genome> population;
@@ -39,16 +38,16 @@ public class GeneticAlgorithm
 
         // Reset the appropriate variables
         reset();
-
+        
         // Sort the population (for scaling and elitism)
         Population.Sort();
 
-        // Calculate best, worst, average and total fitness
-        calculateBestWorstAvgTot();
+        // Calculate total fitness
+        calculateBestWorstTotalFitness();
 
         // Kill certain percentage
         int count = (int) Mathf.Round(NeuralParameters.PERCENT_EXTINCT / (float) populationSize * 100);
-        Population.RemoveRange(0, count);
+        Population.RemoveRange(Population.Count - 1 - count, count);
 
         // Create a temporary vector to store new chromosones
         List<Genome> NewPopulation = new List<Genome>();
@@ -63,14 +62,14 @@ public class GeneticAlgorithm
         while (NewPopulation.Count < populationSize)
         {
             // Grab two chromosones
-            Genome mum = getChromosomeRoulette();
+            Genome mom = getChromosomeRoulette();
             Genome dad = getChromosomeRoulette();
 
             // Create some offspring via crossover
             List<float> baby1 = new List<float>();
             List<float> baby2 = new List<float>();
 
-            crossover(mum.Weights, dad.Weights, ref baby1, ref baby2);
+            crossover(mom.Weights, dad.Weights, ref baby1, ref baby2);
 
             // Mutate
             mutate(baby1);
@@ -143,29 +142,25 @@ public class GeneticAlgorithm
 
     private Genome getChromosomeRoulette()
     {
+        // Get scaled total fitness
+        float scaledTotalFitness = TotalFitness - Population.Count * WorstFitness;
         // Generate a random number between 0 & total fitness count
-        float Slice = Random.value * TotalFitness;
+        float slice = Random.value * scaledTotalFitness;
 
-        // This will be set to the chosen chromosome
-        Genome TheChosenOne = population[0];
-
-        // Go through the chromosones adding up the fitness so far
+        // Go through the chromosones adding up the fitness so far. Favour fitter chromosones.
         double FitnessSoFar = 0;
-
         for (int i = 0; i < Population.Count; ++i)
         {
-            FitnessSoFar += population[i].Fitness;
+            FitnessSoFar += Population[i].Fitness - WorstFitness;
 
             // If the fitness so far > random number return the chromo at this point
-            if (FitnessSoFar >= Slice)
+            if (FitnessSoFar >= slice)
             {
-                TheChosenOne = Population[i];
-
-                break;
+                return Population[i];
             }
         }
 
-        return TheChosenOne;
+        return Population[0];
     }
 
     private void grabNBest(int nBest, int numCopies, ref List<Genome> population)
@@ -177,38 +172,19 @@ public class GeneticAlgorithm
         {
             for (int i = 0; i < numCopies; ++i)
             {
-                population.Add(Population[(populationSize - 1) - nBest]);
+                population.Add(Population[nBest]);
             }
         }
     }
 
-    private void calculateBestWorstAvgTot()
+    private void calculateBestWorstTotalFitness()
     {
+        BestFitness = Population[0].Fitness;
+        WorstFitness = Population[Population.Count - 1].Fitness;
+
         TotalFitness = 0;
-
-        float HighestSoFar = float.MinValue;
-        float LowestSoFar = float.MaxValue;
-
         for (int i = 0; i < Population.Count; ++i)
         {
-            //update fittest if necessary
-            if (Population[i].Fitness > HighestSoFar)
-            {
-                HighestSoFar = Population[i].Fitness;
-
-                FittestGenomeIndex = i;
-
-                BestFitness = HighestSoFar;
-            }
-
-            //update worst if necessary
-            if (Population[i].Fitness < LowestSoFar)
-            {
-                LowestSoFar = Population[i].Fitness;
-
-                WorstFitness = LowestSoFar;
-            }
-
             TotalFitness += Population[i].Fitness;
         }
     }
@@ -216,7 +192,5 @@ public class GeneticAlgorithm
     private void reset()
     {
         TotalFitness = 0;
-        BestFitness = 0;
-        WorstFitness = float.MaxValue;
     }
 }

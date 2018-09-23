@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CounterOpponentFighterController : FighterController
+public class AttackOpponentFighterController : FighterController
 {
     public override void Awake()
     {
@@ -18,30 +18,11 @@ public class CounterOpponentFighterController : FighterController
         if (Target < 0)
             Target = getTarget(fighters);
 
-        ActionType action = ActionType.NOTHING;
-
-        switch (previousFigherActions[Target].ActionType)
-        {
-            case ActionType.ATTACK:
-                action = ActionType.MAGIC;
-                break;
-            case ActionType.DEFEND:
-                action = ActionType.HEAL;
-                break;
-            case ActionType.HEAL:
-                action = ActionType.ATTACK;
-                break;
-            case ActionType.MAGIC:
-                action = ActionType.DEFEND;
-                break;
-            case ActionType.NOTHING:
-                action = ActionType.MAGIC;
-                break;
-        }
+        ActionType action = ActionType.ATTACK;
 
         return new BattleAction(action, Target);
     }
-    
+
     private int getTarget(Dictionary<int, FighterController> fighters)
     {
         foreach (KeyValuePair<int, FighterController> entry in fighters)

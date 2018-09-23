@@ -7,10 +7,9 @@ using UnityEngine.UI;
 public abstract class FighterController : MonoBehaviour
 {
     public int Target { get; internal set; }
+    public bool FlipRenderer { get; internal set; }
+    public Color FighterColor { get; internal set; }
 
-    public bool FlipRenderer = false;
-    public Color FighterColor = Color.white;
-    
     public virtual SpriteRenderer BackgroundRenderer { get; internal set; }
     public virtual SpriteRenderer ActionRenderer { get; internal set; }
 
@@ -35,6 +34,17 @@ public abstract class FighterController : MonoBehaviour
         ActionRenderer = transform.Find("ActionRenderer")?.GetComponent<SpriteRenderer>();
         BackgroundRenderer = transform.Find("BackgroundRenderer")?.GetComponent<SpriteRenderer>();
 
+        if (transform.position.x > 0)
+        {
+            FlipRenderer = true;
+            FighterColor = Color.red;
+        }
+        else
+        {
+            FlipRenderer = false;
+            FighterColor = Color.blue;
+        }
+
         if (FlipRenderer)
             transform.localScale = Vector3.Scale(transform.localScale, new Vector3(-1, 1, 1));
         if (BackgroundRenderer != null)
@@ -48,7 +58,8 @@ public abstract class FighterController : MonoBehaviour
     public virtual void Start()
     {
         health = GameManager.Instance.MaxHealth;
-        healthChangeAction(health.ToString());
+        if (BackgroundRenderer != null)
+            healthChangeAction(health.ToString());
     }
 
     public virtual void ClearActionIcon()
@@ -66,6 +77,9 @@ public abstract class FighterController : MonoBehaviour
 
     internal virtual void animateHealthChange(float difference, Action callback)
     {
+        if (BackgroundRenderer == null)
+            return;
+
         if (difference < 0)
         {
             FighterAnimator.ReceiveDamage(gameObject, callback);

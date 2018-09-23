@@ -28,7 +28,7 @@ public struct Genome : System.IComparable
         Genome g = (Genome) obj;
         if (Fitness == g.Fitness)
             return 0;
-        else if (Fitness < g.Fitness)
+        else if (Fitness > g.Fitness)
             return -1;
         else
             return 1;

@@ -29,22 +29,23 @@ public class NeuralNetworkManager : MonoBehaviour
 
     public IEnumerator DoGeneration(int identifier, FighterController opponentFighterController)
     {
-        Debug.Log("Training...");
-
         NeuralNetworkPopulation nnp = fighterPopulations[identifier];
-        NeuralFighterController fighter = GameManager.Instance.gameObject.AddComponent<NeuralFighterController>();
-        FighterController opponentFighter = (FighterController) GameManager.Instance.gameObject.AddComponent(opponentFighterController.GetType());
-
-        Dictionary<int, FighterController> fighters = new Dictionary<int, FighterController> { { 0, fighter }, { 1, opponentFighter } };
-        Dictionary<int, BattleAction> previousFigherActions = new Dictionary<int, BattleAction> { { 0, new BattleAction(ActionType.NOTHING, 1) }, { 1, new BattleAction(ActionType.NOTHING, 0) } };
         for (int i = 0; i < nnp.Population.Count; i++)
         {
             int turn = 0;
-            float fighterHealth = GameManager.Instance.MaxHealth;
-            float opponentHealth = GameManager.Instance.MaxHealth;
+            NeuralFighterController fighter = GameManager.Instance.gameObject.AddComponent<NeuralFighterController>();
+            FighterController opponentFighter = (FighterController) GameManager.Instance.gameObject.AddComponent(opponentFighterController.GetType());
+
+            Dictionary<int, FighterController> fighters = new Dictionary<int, FighterController> { { 0, fighter }, { 1, opponentFighter } };
+            Dictionary<int, BattleAction> previousFigherActions = new Dictionary<int, BattleAction> { { 0, new BattleAction(ActionType.NOTHING, 1) }, { 1, new BattleAction(ActionType.NOTHING, 0) } };
             fighter.NeuralNetwork = nnp.Population[i];
 
-            while (fighterHealth > 0 && opponentHealth > 0 && turn < NeuralParameters.MAX_TURNS)
+            fighter.Awake();
+            fighter.Start();
+            opponentFighter.Awake();
+            opponentFighter.Start();
+
+            while (fighter.Health > 0 && opponentFighter.Health > 0 && turn < NeuralParameters.MAX_TURNS)
             {
                 BattleAction fighterAction = fighter.GetAction(fighters, previousFigherActions);
                 BattleAction opponentAction = opponentFighter.GetAction(fighters, previousFigherActions);
@@ -52,23 +53,27 @@ public class NeuralNetworkManager : MonoBehaviour
                 previousFigherActions[0] = fighterAction;
                 previousFigherActions[1] = opponentAction;
 
-                fighterHealth -= getReceivedDamage(fighterAction, opponentAction);
-                opponentHealth -= getReceivedDamage(opponentAction, fighterAction);
+                fighter.Health -= getReceivedDamage(fighterAction, opponentAction);
+                opponentFighter.Health -= getReceivedDamage(opponentAction, fighterAction);
 
                 turn++;
             }
+            if (opponentFighter.Health < 0)
+                opponentFighter.Health = 0;
+            if (fighter.Health < 0)
+                fighter.Health = 0;
 
-            float fitness = fighterHealth - opponentHealth;
-            if (opponentHealth > 0 && fighterHealth > 0)
+            float fitness = fighter.Health - opponentFighter.Health - turn;
+            if (opponentFighter.Health > 0 && fighter.Health > 0)
             {
                 if (fitness > 0)
                     fitness *= 0.5f;
                 else
                     fitness *= 1.5f;
             }
-            else if (opponentHealth > 0 && fighterHealth <= 0)
+            else if (opponentFighter.Health > 0 && fighter.Health <= 0)
             {
-                fitness = float.MinValue;
+                fitness *= 3;
             }
 
             nnp.Population[i].Fitness = fitness;
@@ -76,12 +81,13 @@ public class NeuralNetworkManager : MonoBehaviour
             genome.Fitness = fitness;
             nnp.GeneticAlgorithm.Population[i] = genome;
 
+            Destroy(fighter);
+            Destroy(opponentFighter);
+
             yield return null;
         }
         
         nnp.Epoch();
-        Destroy(fighter);
-        Debug.Log("Finished training!");
         Debug.Log(string.Format("Best fitness: {0} - Average fitness: {1} - Worst fitness: {2}", nnp.BestFitness, Mathf.Round(nnp.AverageFitness * 100f) / 100f, nnp.WorstFitness));
         Debug.Break();
     }

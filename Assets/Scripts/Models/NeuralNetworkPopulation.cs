@@ -10,8 +10,8 @@ public class NeuralNetworkPopulation
     public float TotalFitness { get { return GeneticAlgorithm.TotalFitness; } }
     public float Generation { get { return GeneticAlgorithm.Generation; } }
     public List<Genome> Genomes { get { return GeneticAlgorithm.Population; } }
-    public Genome FittestGenome { get { return GeneticAlgorithm.Population[GeneticAlgorithm.FittestGenomeIndex]; } }
-    public NeuralNetwork FittestNeuralNetwork { get { return Population[GeneticAlgorithm.FittestGenomeIndex]; } }
+    public Genome FittestGenome { get { return GeneticAlgorithm.Population[0]; } }
+    public NeuralNetwork FittestNeuralNetwork { get { return Population[0]; } }
 
     public GeneticAlgorithm GeneticAlgorithm;
     public List<NeuralNetwork> Population;

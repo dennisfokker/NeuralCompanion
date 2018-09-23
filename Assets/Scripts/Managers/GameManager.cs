@@ -1,16 +1,17 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
+    public static bool paused { get; set; }
 
     public GameObject GroundTilePrefab;
     public GameObject LevelBarrierPrefab;
 
-    public GameObject PlayerFighterPrefab;
-    public GameObject OpponentFighterPrefab;
+    public GameObject FighterPrefab;
 
     public int GroundHeight = 0;
     public int LevelWidth = 10;
@@ -19,6 +20,7 @@ public class GameManager : MonoBehaviour
 
     public float MaxHealth = 20;
 
+    public Type NextFighterController { get; set; }
     public float Offset { get; private set; }
     public GameController GameController { get; private set; }
     public NeuralNetworkManager NeuralNetworkManager { get; private set; }
@@ -40,6 +42,8 @@ public class GameManager : MonoBehaviour
 
         GameController = GetComponent<GameController>();
         NeuralNetworkManager = GetComponent<NeuralNetworkManager>();
+        NextFighterController = NextFighterController ?? typeof(HealOpponentFighterController);
+        paused = true;
     }
 
     void Start ()
@@ -67,13 +71,17 @@ public class GameManager : MonoBehaviour
         if (OpponentFighterController != null)
             Destroy(OpponentFighterController.gameObject);
 
-        PlayerFighterController = Instantiate(PlayerFighterPrefab, new Vector3(PlayerStartPosition.X + Offset, PlayerStartPosition.Y), Quaternion.identity).GetComponent<FighterController>();
-        OpponentFighterController = Instantiate(OpponentFighterPrefab, new Vector3(OpponentStartPosition.X + Offset, OpponentStartPosition.Y), Quaternion.identity).GetComponent<FighterController>();
+        GameObject playerGO = Instantiate(FighterPrefab, new Vector3(PlayerStartPosition.X + Offset, PlayerStartPosition.Y), Quaternion.identity);
+        PlayerFighterController = playerGO.AddComponent<NeuralFighterController>();
+        GameObject opponentGO = Instantiate(FighterPrefab, new Vector3(OpponentStartPosition.X + Offset, OpponentStartPosition.Y), Quaternion.identity);
+        OpponentFighterController = (FighterController) opponentGO.AddComponent(NextFighterController);
 
         GameController.FighterControllers = new Dictionary<int, FighterController>
         {
             { 0, PlayerFighterController },
             { 1, OpponentFighterController }
         };
+
+        GameController.ResetGame();
     }
 }

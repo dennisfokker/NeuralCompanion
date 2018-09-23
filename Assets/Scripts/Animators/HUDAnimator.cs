@@ -8,7 +8,7 @@ public static class HUDAnimator
     public static void ShowWin(RectTransform gameObject, Action onComplete = null)
     {
         if (LeanTween.isTweening(gameObject))
-            LeanTween.cancel(gameObject);
+            return;
 
         LeanTween.scale(gameObject, Vector3.one, 2f)
             .setEaseOutElastic()
@@ -17,7 +17,7 @@ public static class HUDAnimator
     public static void HideWin(RectTransform gameObject, Action onComplete = null)
     {
         if (LeanTween.isTweening(gameObject))
-            LeanTween.cancel(gameObject);
+            return;
 
         LeanTween.scale(gameObject, Vector3.zero, 1f)
             .setEaseInBack()

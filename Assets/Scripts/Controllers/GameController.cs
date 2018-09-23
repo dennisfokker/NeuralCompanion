@@ -17,40 +17,63 @@ public class GameController : MonoBehaviour
     private Dictionary<int, BattleAction> battleActions = new Dictionary<int, BattleAction>();
     private int turn = 0;
     private int fighterCount;
-    private bool StartRound = true;
-    private bool TurnInProgress = false;
+    private bool startRound = true;
+    private bool turnInProgress = false;
 
     void Awake()
     {
-        if (FighterControllers == null)
-            FighterControllers = new Dictionary<int, FighterController>();
-        PreviousBattleActions = new Dictionary<int, BattleAction>();
-
         RoundStart = RoundStart ?? new Action<Dictionary<int, FighterController>>((fighters) => { });
         StartTurn = StartTurn ?? new Action<Dictionary<int, FighterController>>((fighters) => { });
         RoundEnd += (loser, fighters) =>
         {
             GameManager.Instance.StartCoroutine(EndOfRound(loser, fighters));
         };
+
+        ResetGame();
     }
 
     void Update()
     {
-        if (TurnInProgress)
+        if (GameManager.paused)
+            return;
+
+        if (Input.GetKeyUp(KeyCode.Minus))
+            decreaseSpeed();
+        if (Input.GetKeyUp(KeyCode.Equals))
+            increaseSpeed();
+
+        if (turnInProgress)
             return;
         
-        if (StartRound)
+        if (startRound)
             RoundStart(FighterControllers);
 
         RequestActions();
     }
 
+    public void ResetGame()
+    {
+        if (FighterControllers == null)
+            FighterControllers = new Dictionary<int, FighterController>();
+        PreviousBattleActions = new Dictionary<int, BattleAction>();
+
+        startRound = true;
+        turnInProgress = false;
+
+        battleActions = new Dictionary<int, BattleAction>();
+        turn = 0;
+    }
+
     private void RequestActions()
     {
-        TurnInProgress = true;
-        StartRound = false;
+        if (FighterControllers.Count <= 0)
+            return;
+
+        turnInProgress = true;
+        startRound = false;
         turn++;
         StartTurn(FighterControllers);
+        updatePreviousActions();
 
         fighterCount = FighterControllers.Count;
         foreach (KeyValuePair<int, FighterController> entry in FighterControllers)
@@ -102,7 +125,7 @@ public class GameController : MonoBehaviour
             if (loser >= 0)
                 RoundEnd(loser, FighterControllers);
             else
-                TurnInProgress = false;
+                turnInProgress = false;
         });
 
     }
@@ -140,8 +163,32 @@ public class GameController : MonoBehaviour
 
         UIController.Instance.HideWinLoss();
         GameManager.Instance.InitializeFighters();
-        TurnInProgress = false;
-        StartRound = true;
+        turnInProgress = false;
+        startRound = true;
         turn = 0;
+    }
+
+    private void decreaseSpeed()
+    {
+        Time.timeScale /= 2;
+        UIController.Instance.SetSpeed(Time.timeScale);
+    }
+
+    private void increaseSpeed()
+    {
+        Time.timeScale *= 2;
+        UIController.Instance.SetSpeed(Time.timeScale);
+    }
+
+    private void updatePreviousActions()
+    {
+        if (PreviousBattleActions.Count < FighterControllers.Count)
+        {
+            foreach (KeyValuePair<int, FighterController> entry in FighterControllers)
+            {
+                if (!PreviousBattleActions.ContainsKey(entry.Key))
+                    PreviousBattleActions.Add(entry.Key, new BattleAction(ActionType.NOTHING, entry.Key));
+            }
+        }
     }
 }

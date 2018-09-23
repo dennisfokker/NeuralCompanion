@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class NeuralFighterController : FighterController
 {
+    public List<float> LastOutput = new List<float>();
+
     public NeuralNetwork NeuralNetwork { get; set; }
 
     private Dictionary<int, List<BattleAction>> previousOpponentActions = new Dictionary<int, List<BattleAction>>();
@@ -42,18 +44,17 @@ public class NeuralFighterController : FighterController
             opponentLastActions.Add((float) opponentPreviousBattleActions[i].ActionType);
         }
 
-        List<float> input = new List<float> { Health, GameController.FighterControllers[Target]?.Health ?? 0f };
+        List<float> input = new List<float> { Health, fighters[Target]?.Health ?? 0f };
         input.AddRange(opponentLastActions);
         List<float> output = NeuralNetwork.Update(input);
 
-        float total = 0;
+        /*float total = 0;
         foreach (float f in output)
             total += f;
         Dictionary<ActionType, float> percentages = new Dictionary<ActionType, float>();
         for (int i = 1; i <= output.Count; i++)
         {
             percentages.Add((ActionType) i, output[i - 1] * (100 / total));
-            //Debug.Log("Output for " + ((ActionType) i).ToString() + " = " + output[i - 1] + "% (" + output[i - 1] * (100 / total) + "%)");
         }
 
         float rnd = UnityEngine.Random.Range(0f, 100f);
@@ -67,8 +68,20 @@ public class NeuralFighterController : FighterController
                 action = entry.Key;
                 break;
             }
+        }*/
+
+        int highest = 0;
+        float highestValue = output[0];
+        for (int i = 1; i < output.Count; i++)
+        {
+            if (output[i] <= highestValue)
+                continue;
+
+            highest = i;
+            highestValue = output[i];
         }
-        //Debug.Log("rnd = " + rnd);
+        ActionType action = (ActionType) (highest + 1);
+        LastOutput = output;
 
         return new BattleAction(action, Target);
     }

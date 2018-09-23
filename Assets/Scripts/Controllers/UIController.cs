@@ -15,6 +15,14 @@ public class UIController : MonoBehaviour
     [SerializeField]
     private Text WinLossText;
 
+    [SerializeField]
+    private Text SpeedText;
+
+    [SerializeField]
+    private GameObject MenuContainer;
+    [SerializeField]
+    private GameObject HUDContainer;
+
     void Awake()
 	{
         if (Instance == null)
@@ -26,6 +34,12 @@ public class UIController : MonoBehaviour
             Destroy(this.gameObject);
             return;
         }
+    }
+
+    void Start()
+    {
+        MenuContainer.SetActive(true);
+        HUDContainer.SetActive(false);
     }
 
     public void UpdatePlayerHealth(string health)
@@ -48,5 +62,57 @@ public class UIController : MonoBehaviour
     public void HideWinLoss()
     {
         HUDAnimator.HideWin(WinLossText.rectTransform);
+    }
+
+    public void SetSpeed(float speed)
+    {
+        SpeedText.text = speed + "x";
+    }
+
+    public void SetHealFighter()
+    {
+        GameManager.Instance.NextFighterController = typeof(HealOpponentFighterController);
+        HideMenu();
+    }
+
+    public void SetDefendFighter()
+    {
+        GameManager.Instance.NextFighterController = typeof(DefendOpponentFighterController);
+        HideMenu();
+    }
+
+    public void SetMagicFighter()
+    {
+        GameManager.Instance.NextFighterController = typeof(MagicOpponentFighterController);
+        HideMenu();
+    }
+
+    public void SetAttackFighter()
+    {
+        GameManager.Instance.NextFighterController = typeof(AttackOpponentFighterController);
+        HideMenu();
+    }
+
+    public void SetCounterFighter()
+    {
+        GameManager.Instance.NextFighterController = typeof(CounterOpponentFighterController);
+        HideMenu();
+    }
+
+    public void HideMenu()
+    {
+        GameManager.Instance.InitializeFighters();
+        MenuContainer.SetActive(false);
+        HUDContainer.SetActive(true);
+        GameManager.paused = false;
+    }
+
+    public void ShowMenu()
+    {
+        GameManager.paused = true;
+        Time.timeScale = 1;
+        SetSpeed(1);
+        MenuContainer.SetActive(true);
+        HUDContainer.SetActive(false);
     }
 }

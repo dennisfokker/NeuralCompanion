@@ -8,7 +8,7 @@ public static class FighterAnimator
     public static void ReceiveDamage(GameObject gameObject, Action onComplete = null)
     {
         if (LeanTween.isTweening(gameObject))
-            LeanTween.cancel(gameObject);
+            return;
 
         LeanTween.moveX(gameObject, gameObject.transform.position.x + 0.15f, 0.3f)
             .setEaseShake()
@@ -19,7 +19,7 @@ public static class FighterAnimator
     public static void NoDamage(GameObject gameObject, Action onComplete = null)
     {
         if (LeanTween.isTweening(gameObject))
-            LeanTween.cancel(gameObject);
+            return;
 
         LeanTween.moveY(gameObject, gameObject.transform.position.y + 0.5f, 0.3f)
             .setEaseOutCubic()
@@ -34,8 +34,8 @@ public static class FighterAnimator
     public static void ReceiveHealth(GameObject gameObject, Color originalColor, Action onComplete = null)
     {
         if (LeanTween.isTweening(gameObject))
-            LeanTween.cancel(gameObject);
-        
+            return;
+
         LeanTween.color(gameObject, Color.green, 0.25f)
             .setEaseInCubic()
             .setOnComplete(() =>
