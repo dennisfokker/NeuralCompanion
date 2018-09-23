@@ -28,6 +28,12 @@ public class NeuralParameters : MonoBehaviour
     public int NumCopiesElite = 2;
     public int PercentExtinct = 40;
     public int MaxTurns = 30;
+    [Space(10)]
+
+    [Header("Fitness multipliers")]
+    public float PositiveOutOfTimeMultiplier = 0.5f;
+    public float NegativeOutOfTimeMultiplier = 1.5f;
+    public float LoseMultiplier = 3f;
 
     public static int NUM_INPUTS { get; private set; }
     public static int NUM_HIDDEN_LAYERS { get; private set; }
@@ -43,6 +49,9 @@ public class NeuralParameters : MonoBehaviour
     public static int NUM_COPIES_ELITE { get; private set; }
     public static int PERCENT_EXTINCT { get; private set; }
     public static int MAX_TURNS { get; private set; }
+    public static float POSITIVE_OUT_OF_TIME_MULTIPLIER { get; private set; }
+    public static float NEGATIVE_OUT_OF_TIME_MULTIPLIER { get; private set; }
+    public static float LOSE_MULTIPLIER { get; private set; }
 
     void Awake ()
 	{
@@ -60,5 +69,8 @@ public class NeuralParameters : MonoBehaviour
         NUM_COPIES_ELITE = NumCopiesElite;
         PERCENT_EXTINCT = PercentExtinct;
         MAX_TURNS = MaxTurns;
+        POSITIVE_OUT_OF_TIME_MULTIPLIER = PositiveOutOfTimeMultiplier;
+        NEGATIVE_OUT_OF_TIME_MULTIPLIER = NegativeOutOfTimeMultiplier;
+        LOSE_MULTIPLIER = LoseMultiplier;
     }
 }

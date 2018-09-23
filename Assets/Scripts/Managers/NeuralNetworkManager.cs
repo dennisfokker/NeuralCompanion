@@ -67,13 +67,13 @@ public class NeuralNetworkManager : MonoBehaviour
             if (opponentFighter.Health > 0 && fighter.Health > 0)
             {
                 if (fitness > 0)
-                    fitness *= 0.5f;
+                    fitness *= NeuralParameters.POSITIVE_OUT_OF_TIME_MULTIPLIER;
                 else
-                    fitness *= 1.5f;
+                    fitness *= NeuralParameters.NEGATIVE_OUT_OF_TIME_MULTIPLIER;
             }
             else if (opponentFighter.Health > 0 && fighter.Health <= 0)
             {
-                fitness *= 3;
+                fitness *= NeuralParameters.LOSE_MULTIPLIER;
             }
 
             nnp.Population[i].Fitness = fitness;
