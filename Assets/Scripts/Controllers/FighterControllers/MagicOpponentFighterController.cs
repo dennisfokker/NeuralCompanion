@@ -6,6 +6,13 @@ using UnityEngine.UI;
 
 public class MagicOpponentFighterController : FighterController
 {
+    public override string Identifier {
+        get
+        {
+            return "MAGIC";
+        }
+    }
+
     public override void Awake()
     {
         base.Awake();

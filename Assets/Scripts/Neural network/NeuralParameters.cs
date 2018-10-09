@@ -18,15 +18,16 @@ public class NeuralParameters : MonoBehaviour
 
     [Header("Brain elasticity")]
     public float CrossoverRate = 0.7f;
-    public float MutationRate = 0.1f;
-    public float MaxPerturbation = 0.3f;
+    //public float MutationRate = 0.1f;
+    //public float MaxPerturbation = 0.3f;
+    public List<PopulationMutation> PopulationMutations = new List<PopulationMutation>();
     [Space(10)]
 
     [Header("Simulation constraints")]
     public int NumEntities = 100;
-    public int NumElite = 4;
-    public int NumCopiesElite = 2;
-    public int PercentExtinct = 40;
+    //public int NumElite = 4;
+    //public int NumCopiesElite = 2;
+    //public int PercentExtinct = 40;
     public int MaxTurns = 30;
     [Space(10)]
 
@@ -42,12 +43,13 @@ public class NeuralParameters : MonoBehaviour
     public static float ACTIVATION_RESPONSE { get; private set; }
     public static float BIAS { get; private set; }
     public static float CROSSOVER_RATE { get; private set; }
-    public static float MUTATION_RATE { get; private set; }
-    public static float MAX_PERTURBATION { get; private set; }
+    //public static float MUTATION_RATE { get; private set; }
+    //public static float MAX_PERTURBATION { get; private set; }
+    public static List<PopulationMutation> POPULATION_MUTATIONS { get; private set; }
     public static int NUM_ENTITIES { get; private set; }
-    public static int NUM_ELITE { get; private set; }
-    public static int NUM_COPIES_ELITE { get; private set; }
-    public static int PERCENT_EXTINCT { get; private set; }
+    //public static int NUM_ELITE { get; private set; }
+    //public static int NUM_COPIES_ELITE { get; private set; }
+    //public static int PERCENT_EXTINCT { get; private set; }
     public static int MAX_TURNS { get; private set; }
     public static float POSITIVE_OUT_OF_TIME_MULTIPLIER { get; private set; }
     public static float NEGATIVE_OUT_OF_TIME_MULTIPLIER { get; private set; }
@@ -62,12 +64,13 @@ public class NeuralParameters : MonoBehaviour
         ACTIVATION_RESPONSE = ActivationResponse;
         BIAS = Bias;
         CROSSOVER_RATE = CrossoverRate;
-        MUTATION_RATE = MutationRate;
-        MAX_PERTURBATION = MaxPerturbation;
+        //MUTATION_RATE = MutationRate;
+        //MAX_PERTURBATION = MaxPerturbation;
+        POPULATION_MUTATIONS = PopulationMutations;
         NUM_ENTITIES = NumEntities; 
-        NUM_ELITE = NumElite;
-        NUM_COPIES_ELITE = NumCopiesElite;
-        PERCENT_EXTINCT = PercentExtinct;
+        //NUM_ELITE = NumElite;
+        //NUM_COPIES_ELITE = NumCopiesElite;
+        //PERCENT_EXTINCT = PercentExtinct;
         MAX_TURNS = MaxTurns;
         POSITIVE_OUT_OF_TIME_MULTIPLIER = PositiveOutOfTimeMultiplier;
         NEGATIVE_OUT_OF_TIME_MULTIPLIER = NegativeOutOfTimeMultiplier;

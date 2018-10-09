@@ -37,11 +37,32 @@ public class NeuralNetworkPopulation
     public void Epoch()
     {
         GeneticAlgorithm.Epoch();
-        
+
+        Population.RemoveRange(Genomes.Count, Population.Count - Genomes.Count);
         for (int i = 0; i < Population.Count; ++i)
         {
             Population[i].PutWeights(Genomes[i].Weights);
             Population[i].Reset();
+        }
+
+        if (Population.Count < Genomes.Count)
+        {
+            for (int i = Population.Count; i < Genomes.Count; ++i)
+            {
+                Population.Add(new NeuralNetwork());
+                Population[i].PutWeights(Genomes[i].Weights);
+            }
+        }
+    }
+
+    public void EliteEpoch(List<PopulationElite> previousElite)
+    {
+        List<Genome> eliteGenomes = GeneticAlgorithm.EliteEpoch(previousElite);
+
+        for (int i = 0; i < eliteGenomes.Count; i++)
+        {
+            Population.Add(new NeuralNetwork());
+            Population[Population.Count - 1].PutWeights(eliteGenomes[i].Weights);
         }
     }
 

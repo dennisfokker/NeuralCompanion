@@ -6,6 +6,13 @@ using UnityEngine.UI;
 
 public class CounterOpponentFighterController : FighterController
 {
+    public override string Identifier {
+        get
+        {
+            return "counter";
+        }
+    }
+
     public override void Awake()
     {
         base.Awake();
@@ -33,9 +40,6 @@ public class CounterOpponentFighterController : FighterController
                 break;
             case ActionType.MAGIC:
                 action = ActionType.DEFEND;
-                break;
-            case ActionType.NOTHING:
-                action = ActionType.MAGIC;
                 break;
         }
 

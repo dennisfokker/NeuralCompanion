@@ -7,6 +7,12 @@ using UnityEngine.UI;
 public class PlayerFighterController : FighterController
 {
     private int target = -1;
+    public override string Identifier {
+        get
+        {
+            return "player";
+        }
+    }
 
     public override void Awake()
     {

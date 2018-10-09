@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
     public static bool paused { get; set; }
 
+    public bool DebugRun = true;
+
     public GameObject GroundTilePrefab;
     public GameObject LevelBarrierPrefab;
 

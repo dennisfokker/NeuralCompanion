@@ -8,20 +8,21 @@ public class UIController : MonoBehaviour
     public static UIController Instance { get; private set; }
 
     [SerializeField]
-    private Text PlayerHealthText;
-    [SerializeField]
-    private Text OpponentHealthText;
-
-    [SerializeField]
-    private Text WinLossText;
-
-    [SerializeField]
-    private Text SpeedText;
-
-    [SerializeField]
     private GameObject MenuContainer;
     [SerializeField]
     private GameObject HUDContainer;
+
+    [SerializeField]
+    private InputField CustomAIInputField;
+
+    [SerializeField]
+    private Text PlayerHealthText;
+    [SerializeField]
+    private Text OpponentHealthText;
+    [SerializeField]
+    private Text WinLossText;
+    [SerializeField]
+    private Text SpeedText;
 
     void Awake()
 	{
@@ -40,6 +41,11 @@ public class UIController : MonoBehaviour
     {
         MenuContainer.SetActive(true);
         HUDContainer.SetActive(false);
+    }
+
+    public string GetCustomAISequence()
+    {
+        return CustomAIInputField.text;
     }
 
     public void UpdatePlayerHealth(string health)
@@ -96,6 +102,12 @@ public class UIController : MonoBehaviour
     public void SetCounterFighter()
     {
         GameManager.Instance.NextFighterController = typeof(CounterOpponentFighterController);
+        HideMenu();
+    }
+
+    public void SetCustomFighter()
+    {
+        GameManager.Instance.NextFighterController = typeof(CustomOpponentFighterController);
         HideMenu();
     }
 

@@ -13,6 +13,8 @@ public abstract class FighterController : MonoBehaviour
     public virtual SpriteRenderer BackgroundRenderer { get; internal set; }
     public virtual SpriteRenderer ActionRenderer { get; internal set; }
 
+    public abstract string Identifier { get; }
+
     internal Action<string> healthChangeAction = new Action<string>((s) => { /* nothing */ });
     internal GameController GameController;
 

@@ -6,6 +6,13 @@ using UnityEngine.UI;
 
 public class HealOpponentFighterController : FighterController
 {
+    public override string Identifier {
+        get
+        {
+            return "HEAL";
+        }
+    }
+
     public override void Awake()
     {
         base.Awake();

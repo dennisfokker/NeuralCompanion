@@ -9,8 +9,15 @@ public class NeuralFighterController : FighterController
     public List<float> LastOutput = new List<float>();
 
     public NeuralNetwork NeuralNetwork { get; set; }
+    public override string Identifier {
+        get
+        {
+            return "neural";
+        }
+    }
 
-    private Dictionary<int, List<BattleAction>> previousOpponentActions = new Dictionary<int, List<BattleAction>>();
+    private Dictionary<int, List<BattleAction>> previousFighterActions = new Dictionary<int, List<BattleAction>>();
+    private int self = -1;
 
     public override void Awake()
     {
@@ -23,8 +30,10 @@ public class NeuralFighterController : FighterController
     {
         if (Target < 0)
             Target = GetTarget(fighters);
+        if (self < 0)
+            self = getSelf(fighters);
 
-        updateOpponentPreviousActions(fighters, previousFigherActions);
+        updatePreviousFighterActions(fighters, previousFigherActions);
 
         if (NeuralNetwork == null)
         {
@@ -32,7 +41,7 @@ public class NeuralFighterController : FighterController
         }
 
         List<float> opponentLastActions = new List<float>();
-        List<BattleAction> opponentPreviousBattleActions = previousOpponentActions[Target];
+        List<BattleAction> opponentPreviousBattleActions = previousFighterActions[Target];
         for (int i = opponentPreviousBattleActions.Count - 1; i >= opponentPreviousBattleActions.Count - 5; i--)
         {
             if (i < 0)
@@ -43,9 +52,22 @@ public class NeuralFighterController : FighterController
 
             opponentLastActions.Add((float) opponentPreviousBattleActions[i].ActionType);
         }
+        List<float> ownLastActions = new List<float>();
+        List<BattleAction> ownPreviousBattleActions = previousFighterActions[Target];
+        for (int i = ownPreviousBattleActions.Count - 1; i >= ownPreviousBattleActions.Count - 5; i--)
+        {
+            if (i < 0)
+            {
+                ownLastActions.Add((float) ActionType.NOTHING);
+                continue;
+            }
+
+            ownLastActions.Add((float) ownPreviousBattleActions[i].ActionType);
+        }
 
         List<float> input = new List<float> { Health, fighters[Target]?.Health ?? 0f };
         input.AddRange(opponentLastActions);
+        input.AddRange(ownLastActions);
         List<float> output = NeuralNetwork.Update(input);
 
         /*float total = 0;
@@ -99,14 +121,14 @@ public class NeuralFighterController : FighterController
         return 0;
     }
 
-    private void updateOpponentPreviousActions(Dictionary<int, FighterController> fighters, Dictionary<int, BattleAction> previousFigherActions)
+    private void updatePreviousFighterActions(Dictionary<int, FighterController> fighters, Dictionary<int, BattleAction> previousFigherActions)
     {
-        if (previousOpponentActions.Count < fighters.Count)
+        if (previousFighterActions.Count < fighters.Count)
         {
             foreach (KeyValuePair<int, FighterController> entry in fighters)
             {
-                if (!previousOpponentActions.ContainsKey(entry.Key))
-                    previousOpponentActions.Add(entry.Key, new List<BattleAction>());
+                if (!previousFighterActions.ContainsKey(entry.Key))
+                    previousFighterActions.Add(entry.Key, new List<BattleAction>());
             }
 
             return;
@@ -114,10 +136,21 @@ public class NeuralFighterController : FighterController
 
         foreach (KeyValuePair<int, BattleAction> entry in previousFigherActions)
         {
-            if (previousOpponentActions.ContainsKey(entry.Key))
-                previousOpponentActions[entry.Key].Add(entry.Value);
+            if (previousFighterActions.ContainsKey(entry.Key))
+                previousFighterActions[entry.Key].Add(entry.Value);
             else
-                previousOpponentActions.Add(entry.Key, new List<BattleAction>() { entry.Value });
+                previousFighterActions.Add(entry.Key, new List<BattleAction>() { entry.Value });
         }
+    }
+
+    private int getSelf(Dictionary<int, FighterController> fighters)
+    {
+        foreach (KeyValuePair<int, FighterController> entry in fighters)
+        {
+            if (entry.Value == this)
+                return entry.Key;
+        }
+
+        return 0;
     }
 }

@@ -56,6 +56,7 @@ public class GameController : MonoBehaviour
         if (FighterControllers == null)
             FighterControllers = new Dictionary<int, FighterController>();
         PreviousBattleActions = new Dictionary<int, BattleAction>();
+        battleActions = new Dictionary<int, BattleAction>();
 
         startRound = true;
         turnInProgress = false;
@@ -163,9 +164,6 @@ public class GameController : MonoBehaviour
 
         UIController.Instance.HideWinLoss();
         GameManager.Instance.InitializeFighters();
-        turnInProgress = false;
-        startRound = true;
-        turn = 0;
     }
 
     private void decreaseSpeed()

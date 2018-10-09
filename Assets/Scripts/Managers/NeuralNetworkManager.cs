@@ -1,10 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class NeuralNetworkManager : MonoBehaviour
 {
     private Dictionary<int, NeuralNetworkPopulation> fighterPopulations = new Dictionary<int, NeuralNetworkPopulation>();
+    private List<PopulationElite> previousElite = new List<PopulationElite>(10);
+
+    private float[] previousBest = new float[0];
 
     void Start()
     {
@@ -23,12 +27,20 @@ public class NeuralNetworkManager : MonoBehaviour
             NeuralFighterController nfc = (NeuralFighterController) entry.Value;
             nfc.NeuralNetwork = GetLastFittestNetwork(entry.Key);
 
+            // First update the previous elite, then we can run another generation.
+            string fighterIdentifier = fighters[nfc.GetTarget(fighters)].Identifier;
+            float[] weights = fighterPopulations[entry.Key].FittestGenome.Weights;
+            addPreviousElite(fighterIdentifier, weights);
+
             GameManager.Instance.StartCoroutine(DoGeneration(entry.Key, fighters[nfc.GetTarget(fighters)]));
         }
     }
 
     public IEnumerator DoGeneration(int identifier, FighterController opponentFighterController)
     {
+        int simulationsPerFrame = 5;
+        int simulationsLeft = 5;
+
         NeuralNetworkPopulation nnp = fighterPopulations[identifier];
         for (int i = 0; i < nnp.Population.Count; i++)
         {
@@ -84,12 +96,18 @@ public class NeuralNetworkManager : MonoBehaviour
             Destroy(fighter);
             Destroy(opponentFighter);
 
-            yield return null;
+            if (--simulationsLeft < 0)
+            {
+                yield return null;
+                simulationsLeft = simulationsPerFrame;
+            }
         }
         
         nnp.Epoch();
+        nnp.EliteEpoch(previousElite);
         Debug.Log(string.Format("Best fitness: {0} - Average fitness: {1} - Worst fitness: {2}", nnp.BestFitness, Mathf.Round(nnp.AverageFitness * 100f) / 100f, nnp.WorstFitness));
-        Debug.Break();
+        if (GameManager.Instance.DebugRun)
+            Debug.Break();
     }
 
     public NeuralNetwork GetLastFittestNetwork(int identifier)
@@ -118,5 +136,24 @@ public class NeuralNetworkManager : MonoBehaviour
                 receivedDamage = bar.ReceivingDamage;
 
         return receivedDamage;
+    }
+
+    private void addPreviousElite(string identifier, float[] weights)
+    {
+        for (int i = 0; i < previousElite.Count; i++)
+        {
+            if (previousElite[i].Identifier == identifier)
+            {
+                previousElite[i] = new PopulationElite(identifier, weights);
+                return;
+            }
+        }
+
+        if (previousElite.Count >= 10)
+        {
+            previousElite.RemoveAt(0);
+        }
+
+        previousElite.Add(new PopulationElite(identifier, weights));
     }
 }
